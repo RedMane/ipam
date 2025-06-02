@@ -1,30 +1,15 @@
 // Global parameters
 targetScope = 'subscription'
 
-@description('GUID for Resource Naming')
-param guid string = newGuid()
+@description('Build configuration object')
+#disable-next-line no-unused-params
+param BUILD object
 
-@description('Deployment Location')
-param location string = deployment().location
+@description('IPAM spoke configuration')
+param ipamSpoke object
 
-@maxLength(7)
-@description('Prefix for Resource Naming')
-param namePrefix string = 'ipam'
-
-@description('Azure Cloud Enviroment')
-param azureCloud string = 'AZURE_PUBLIC'
-
-@description('Flag to Deploy Private Container Registry')
-param privateAcr bool = false
-
-@description('Flag to Deploy IPAM as a Function')
-param deployAsFunc bool = false
-
-@description('Flag to Deploy IPAM as a Container')
-param deployAsContainer bool = false
-
-@description('IPAM-UI App Registration Client/App ID')
-param uiAppId string = '00000000-0000-0000-0000-000000000000'
+@description('IPAM configuration')
+param ipamConfig object
 
 @description('IPAM-Engine App Registration Client/App ID')
 param engineAppId string
@@ -33,30 +18,38 @@ param engineAppId string
 @description('IPAM-Engine App Registration Client Secret')
 param engineAppSecret string
 
-@description('Tags')
-param tags object = {}
+@description('GUID for Resource Naming')
+param guid string = newGuid()
 
-@description('IPAM Resource Names')
-param resourceNames object = {
-  functionName: '${namePrefix}-${uniqueString(guid)}'
-  appServiceName: '${namePrefix}-${uniqueString(guid)}'
-  functionPlanName: '${namePrefix}-asp-${uniqueString(guid)}'
-  appServicePlanName: '${namePrefix}-asp-${uniqueString(guid)}'
-  cosmosAccountName: '${namePrefix}-dbacct-${uniqueString(guid)}'
-  cosmosContainerName: '${namePrefix}-ctr'
-  cosmosDatabaseName: '${namePrefix}-db'
-  keyVaultName: '${namePrefix}-kv-${uniqueString(guid)}'
-  workspaceName: '${namePrefix}-law-${uniqueString(guid)}'
-  managedIdentityName: '${namePrefix}-mi-${uniqueString(guid)}'
-  resourceGroupName: '${namePrefix}-rg-${uniqueString(guid)}'
-  storageAccountName: '${namePrefix}stg${uniqueString(guid)}'
-  containerRegistryName: '${namePrefix}acr${uniqueString(guid)}'
+// Use ipamConfig for deployment settings
+var location = ipamConfig.location
+var azureCloud = ipamConfig.azureCloud
+var privateAcr = ipamConfig.privateAcr
+var deployAsFunc = ipamConfig.deployAsFunc
+var deployAsContainer = ipamConfig.deployAsContainer
+var uiAppId = ipamConfig.uiAppId
+var tags = ipamConfig.tags
+
+// Use ipamSpoke for resource names
+var resourceNames = {
+  functionName: ipamSpoke.functionApp.name
+  appServiceName: ipamSpoke.appService.name
+  functionPlanName: ipamSpoke.appServicePlan.function
+  appServicePlanName: ipamSpoke.appServicePlan.app
+  cosmosAccountName: ipamSpoke.cosmosDb.accountName
+  cosmosContainerName: ipamSpoke.cosmosDb.containerName
+  cosmosDatabaseName: ipamSpoke.cosmosDb.databaseName
+  keyVaultName: ipamSpoke.keyVault.name
+  workspaceName: ipamSpoke.logAnalytics.name
+  managedIdentityName: ipamSpoke.managedIdentity.name
+  resourceGroupName: ipamSpoke.resourceGroup.name
+  storageAccountName: ipamSpoke.storageAccount.name
+  containerRegistryName: ipamSpoke.containerRegistry.name
 }
 
 // Resource Group
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
-  #disable-next-line use-stable-resource-identifiers
   name: resourceNames.resourceGroupName
   tags: tags
 }
@@ -184,5 +177,6 @@ output subscriptionId string = subscription().subscriptionId
 output resourceGroupName string = resourceGroup.name
 output appServiceName string = deployAsFunc ? resourceNames.functionName : resourceNames.appServiceName
 output appServiceHostName string = deployAsFunc ? functionApp.outputs.functionAppHostName : appService.outputs.appServiceHostName
+output appServiceUrl string = deployAsFunc ? 'https://${functionApp.outputs.functionAppHostName}' : 'https://${appService.outputs.appServiceHostName}'
 output acrName string = privateAcr ? containerRegistry.outputs.acrName : ''
 output acrUri string = privateAcr ? containerRegistry.outputs.acrUri : ''

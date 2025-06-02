@@ -1,0 +1,41 @@
+{
+  "client": "connectivity",
+  "location": "centralus",
+  "azureCloud": "AzureCloud",
+  "lc": "cu",
+  "subscriptionName": "Azure-Comm-Connectivity",
+  "subscriptionId": "8ed4a7d5-04a8-48d0-a10d-20bf89e8b420",
+  "tenantId": "32599cbd-2936-4030-972f-1bdcfa8a673b",
+  "ipam": {
+    "config": {
+      "deployAsFunc": false,
+      "deployAsContainer": true,
+      "privateAcr": false,
+      "disableUI": false,
+      "tags": {
+        "Application": "IPAM",
+        "Environment": "Production",
+        "Client": "connectivity",
+        "Location": "centralus"
+      }
+    },
+    "resourceNames": {
+      "resourceGroupName": "connectivity-rg-cu-ipam",
+      "functionName": "connectivity-func-ipam-01",
+      "appServiceName": "connectivity-app-ipam-01",
+      "functionPlanName": "connectivity-asp-ipam-func-01",
+      "appServicePlanName": "connectivity-asp-ipam-app-01",
+      "cosmosAccountName": "connectivity-cosmos-ipam-01",
+      "cosmosContainerName": "ipam-ctr",
+      "cosmosDatabaseName": "ipam-db",
+      "keyVaultName": "connectivity-kv-ipam-01",
+      "workspaceName": "connectivity-log-ipam-01",
+      "managedIdentityName": "connectivity-id-ipam-01",
+      "storageAccountName": "connectivitystipam01",
+      "containerRegistryName": "connectivitycripam01"
+    },
+    "engineAppId": "8e2c41b7-1a74-4e1e-b2f7-60c85264c0ab",
+    "uiAppId": "3669b6bd-1c3e-4c14-a48c-6fb5d60feb2e",
+    "engineAppSecret": "REPLACE-WITH-ENGINE-SECRET"
+  }
+}
