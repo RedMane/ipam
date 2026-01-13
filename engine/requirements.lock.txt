@@ -9,7 +9,7 @@ APScheduler==3.10.4
 async-timeout==5.0.1
 attrs==24.2.0
 azure-common==1.1.28
-azure-core==1.32.0
+azure-core==1.38.0
 azure-cosmos==4.9.0
 azure-functions==1.21.3
 azure-identity==1.19.0
