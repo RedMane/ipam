@@ -63,7 +63,7 @@ pydantic_core==2.27.1
 Pygments==2.18.0
 PyJWT==2.10.0
 python-dotenv==1.0.1
-python-multipart==0.0.17
+python-multipart==0.0.22
 pytz==2024.2
 PyYAML==6.0.2
 regex==2024.11.6
